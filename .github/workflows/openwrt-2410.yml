@@ -145,7 +145,7 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         echo -e "✅ openwrt-2410\n" >> release.txt
-        echo "release_tag=$(${{ env.FILE_NAME }}-date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
+        echo "openwrt-24.10" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 上传固件到发布
@@ -154,7 +154,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
+        tag_name: openwrt-24.10
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
@@ -176,7 +176,7 @@ jobs:
           - 🔑 默认密码：无密码
           - 🧊 更新时间：${{ env.date }}
           - 🎈 源码哈希值：${{ env.hash }}
-          https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/${{ steps.tag.outputs.release_tag }}
+          https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/openwrt-24.10
 
     - name: Enterprise WeChat notification upload success
       if: steps.tag.outputs.status == 'success' &&env.WECHAT_WORK_PUSH == 'true'
@@ -197,7 +197,7 @@ jobs:
                     - 🚀 内核版本: ${{ env.KERNEL }}\n
                     - 🌐 默认地址：192.168.1.11\n
                     - 🧊 更新时间：${{env.release}}",
-                  "url": "https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/${{ steps.tag.outputs.release_tag }}"
+                  "url": "https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/openwrt-24.10"
                 }
               ]
             }
