@@ -72,7 +72,7 @@ jobs:
       uses: klever1988/cachewrtbuild@main
       with:
         ccache: 'true'
-        mixkey: '24.10_X86-64'
+        mixkey: 'openwrt-2410'
         prefix: ${{ github.workspace }}/openwrt
 
     - name: 更新 & 安装 feeds & 执行脚本
@@ -138,8 +138,8 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       run: |
-        echo -e "✅ 24.10 源码 X86-64 平台\n" >> release.txt
-        echo "release_tag=$(date +"%Y.%m.%d-${{ env.FILE_NAME }}")" >> $GITHUB_OUTPUT
+        echo -e "✅ openwrt-2410\n" >> release.txt
+        echo "release_tag=$(${{ env.FILE_NAME }}-date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 上传固件到发布
