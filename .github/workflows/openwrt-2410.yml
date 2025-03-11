@@ -145,7 +145,8 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         echo -e "✅ openwrt-2410\n" >> release.txt
-        echo "openwrt-24.10" >> $GITHUB_OUTPUT
+        #echo "release_tag=$(date +"%Y.%m.%d-24.10_X86-64")" >> $GITHUB_OUTPUT
+        echo "release_tag=openwrt-2410" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 上传固件到发布
