@@ -34,6 +34,8 @@ env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   FILE_NAME: openwrt-2410
+  TELEGRAM_WORK_PUSH: true
+  WECHAT_WORK_PUSH: true
 
 jobs:
   build:
@@ -123,7 +125,11 @@ jobs:
         rm -rf *.buildinfo 
         rm -rf *.json 
         rm -rf *.manifest 
+        rm -rf *rootfs*
+        rm -rf sha256sums
         rm -rf packages
+        mv immortalwrt-x86-64-generic-squashfs-combined-efi.img.gz ${{ env.FILE_NAME }}-$(TZ=Asia/Shanghai date "+%Y%m%d")-uefi.img.gz
+        mv immortalwrt-x86-64-generic-squashfs-combined.img.gz ${{ env.FILE_NAME }}-$(TZ=Asia/Shanghai date "+%Y%m%d")-bios.img.gz
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -152,19 +158,47 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
-    - name: 删除以前发布的固件
-      uses: dev-drprasad/delete-older-releases@v0.3.3
-      if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
+    - name: Telegram notification upload success
+      if: steps.tag.outputs.status == 'success' && env.TELEGRAM_WORK_PUSH == 'true'
+      uses: appleboy/telegram-action@master
       with:
-        keep_latest: 15
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          ♨️ 【${{ env.FILE_NAME }}】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: X86-64
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/${{ steps.tag.outputs.release_tag }}
 
-    - name: 删除以前的工作流程
-      uses: Mattraks/delete-workflow-runs@v2
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        repository: ${{ github.repository }}
-        retain_days: 1
-        keep_minimum_runs: 5
+    - name: Enterprise WeChat notification upload success
+      if: steps.tag.outputs.status == 'success' &&env.WECHAT_WORK_PUSH == 'true'
+      run: |
+        curl -X POST "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${{ secrets.WEBHOOK_SEND_KEY }}" \
+        -H "Content-Type: application/json" \
+        -d '{
+            "msgtype": "news",
+            "news": {
+              "articles": [
+                {
+                  "title": "♨️ 【${{ env.FILE_NAME }}】项目编译完成 ♨️",
+                  "description": "- ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}\n
+                    - 🔴 固件大小：Kernel=32M，rootfs=968M\n
+                    - 💻 平台架构: X86-64\n
+                    - ⚽ 固件源码: ${{ env.REPO_URL }}\n
+                    - 💝 源码分支: ${{ env.REPO_BRANCH }}\n
+                    - 🚀 内核版本: ${{ env.KERNEL }}\n
+                    - 🌐 默认地址：192.168.1.11\n
+                    - 🧊 更新时间：${{env.release}}",
+                  "url": "https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/${{ steps.tag.outputs.release_tag }}"
+                }
+              ]
+            }
+          }'
