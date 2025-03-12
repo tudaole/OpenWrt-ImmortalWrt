@@ -16,7 +16,6 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages.git package/pwp
 mkdir package/small
 pushd package/small
 
-
 #adguardhome
 git clone -b 2023.10 --depth 1 https://github.com/XiaoBinin/luci-app-adguardhome.git
 #lucky
@@ -34,6 +33,8 @@ git clone -b main --depth 1 https://github.com/xiaorouji/openwrt-passwall2.git
 # git clone -b v5 --depth 1 https://github.com/sbwml/luci-app-mosdns.git
 # #openclash
 # git clone -b master --depth 1 https://github.com/vernesong/OpenClash.git
+#poweroffdevice
+git clone -b main --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git
 
 popd
 
