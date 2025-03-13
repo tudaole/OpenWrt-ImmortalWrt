@@ -24,7 +24,7 @@ git clone -b main --depth 1 https://github.com/sirpdboy/luci-app-lucky.git
 # git clone -b lede --depth 1 https://github.com/pymumu/luci-app-smartdns.git
 # git clone -b master --depth 1 https://github.com/pymumu/smartdns.git
 # #ssrp
-# git clone -b master --depth 1 https://github.com/fw876/helloworld.git
+git clone -b master --depth 1 https://github.com/fw876/helloworld.git
 # #passwall
 # git clone -b main --depth 1 https://github.com/xiaorouji/openwrt-passwall.git
 #passwall2
