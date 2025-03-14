@@ -44,6 +44,9 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/*/Make
 sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
 
 # 显示增加编译时间
+echo "当前路径及递归的文件夹："
+ls -lhR
+echo "========================="
 echo "package/lean/default-settings/files/zzz-default-settings原文内容："
 cat package/lean/default-settings/files/zzz-default-settings
 echo "========================="
