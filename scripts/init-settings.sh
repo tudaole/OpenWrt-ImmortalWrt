@@ -11,14 +11,14 @@ echo "========================="
 build_date=$(TZ=Asia/Shanghai date "+%Y.%m.%d")
 
 # 修改主机名字，修改你喜欢的就行（不能纯数字或者使用中文）
-sed -i "/uci commit system/i\uci set system.@system[0].hostname='OpenWrt-GXNAS'" package/lean/default-settings/files/zzz-default-settings
+sed -i "/uci commit system/i\uci set system.@system[0].hostname='OpenWrt-GXNAS'" package/lean/default-settings/files/99-default-settings-chinese
 sed -i "s/hostname='.*'/hostname='OpenWrt-GXNAS'/g" ./package/base-files/files/bin/config_generate
 
 # 修改默认IP
 sed -i 's/192.168.1.1/192.168.1.11/g' package/base-files/files/bin/config_generate
 
 # 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
-sed -i '/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF./d' package/lean/default-settings/files/zzz-default-settings
+sed -i '/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF./d' package/lean/default-settings/files/99-default-settings-chinese
 
 # 调整 x86 型号只显示 CPU 型号
 sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/files/x86/autocore
@@ -57,22 +57,10 @@ cat package/emortal/default-settings/files/99-default-settings
 echo "========================="
 
 # 修改右下角脚本版本信息
-echo "feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm原文内容："
-cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-echo "========================="
 sed -i 's/<a class=\"luci-link\" href=\"https:\/\/github.com\/openwrt\/luci\" target=\"_blank\">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)<\/a>/OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build @R'"$build_date"'/' feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
 sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a class="luci-link" href="https://wp.gxnas.com" target="_blank">🌐固件编译者：【GXNAS博客】</a>|' feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
 sed -i 's|<%= ver.distversion %>|<a href="https://d.gxnas.com" target="_blank">👆点这里下载最新版本</a>|' feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-echo "增加编译时间后feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm的内容："
-cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-echo "========================="
-echo "feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm原文内容："
-cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
-echo "========================="
 sed -i "/<a class=\"luci-link\"/d; /<a href=\"https:\/\/github.com\/jerrykuku\/luci-theme-argon\"/d; s|<%= ver.distversion %>|OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build @R$build_date|" feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
-echo "增加编译时间后package/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm的内容："
-cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
-echo "========================="
 
 # 修改欢迎banner
 cp -f $GITHUB_WORKSPACE/scripts/banner package/base-files/files/etc/banner
