@@ -35,6 +35,8 @@ git clone -b main --depth 1 https://github.com/xiaorouji/openwrt-passwall2.git
 # git clone -b master --depth 1 https://github.com/vernesong/OpenClash.git
 #poweroffdevice
 git clone -b main --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git
+#nikki
+https://github.com/nikkinikki-org/OpenWrt-nikki
 
 popd
 
