@@ -39,6 +39,8 @@ git clone -b main --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.
 git clone -b main --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki
 #istore
 git clone -b main --depth 1 https://github.com/linkease/istore
+mv istore/luci-app-store .
+rm -rf istore
 
 popd
 
