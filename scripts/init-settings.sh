@@ -47,31 +47,31 @@ sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=65535' package
 echo "当前路径及递归的文件夹："
 ls -lhR
 echo "========================="
-echo "package/lean/default-settings/files/zzz-default-settings原文内容："
-cat package/lean/default-settings/files/zzz-default-settings
+echo "package/emortal/default-settings/files/99-default-settings原文内容："
+cat package/emortal/default-settings/files/99-default-settings
 echo "========================="
-sed -i "s/DISTRIB_REVISION='R[0-9]\+\.[0-9]\+\.[0-9]\+'/DISTRIB_REVISION='@R$build_date'/g" package/lean/default-settings/files/zzz-default-settings
-sed -i 's/ImmortalWrt /OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build/g' package/lean/default-settings/files/zzz-default-settings
-echo "增加编译时间后package/lean/default-settings/files/zzz-default-settings的内容："
-cat package/lean/default-settings/files/zzz-default-settings
+sed -i "s/DISTRIB_REVISION='R[0-9]\+\.[0-9]\+\.[0-9]\+'/DISTRIB_REVISION='@R$build_date'/g" package/emortal/default-settings/files/99-default-settings
+sed -i 's/ImmortalWrt /OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build/g' package/emortal/default-settings/files/99-default-settings
+echo "增加编译时间后package/emortal/default-settings/files/99-default-settings的内容："
+cat package/emortal/default-settings/files/99-default-settings
 echo "========================="
 
 # 修改右下角脚本版本信息
-echo "package/luci-theme-argon/luasrc/view/themes/argon/footer.htm原文内容："
-cat package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+echo "feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm原文内容："
+cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
 echo "========================="
-sed -i 's/<a class=\"luci-link\" href=\"https:\/\/github.com\/openwrt\/luci\" target=\"_blank\">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)<\/a>/OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build @R'"$build_date"'/' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a class="luci-link" href="https://wp.gxnas.com" target="_blank">🌐固件编译者：【GXNAS博客】</a>|' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-sed -i 's|<%= ver.distversion %>|<a href="https://d.gxnas.com" target="_blank">👆点这里下载最新版本</a>|' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-echo "增加编译时间后package/luci-theme-argon/luasrc/view/themes/argon/footer.htm的内容："
-cat package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+sed -i 's/<a class=\"luci-link\" href=\"https:\/\/github.com\/openwrt\/luci\" target=\"_blank\">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)<\/a>/OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build @R'"$build_date"'/' feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a class="luci-link" href="https://wp.gxnas.com" target="_blank">🌐固件编译者：【GXNAS博客】</a>|' feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+sed -i 's|<%= ver.distversion %>|<a href="https://d.gxnas.com" target="_blank">👆点这里下载最新版本</a>|' feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+echo "增加编译时间后feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm的内容："
+cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
 echo "========================="
-echo "package/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm原文内容："
-cat package/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
+echo "feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm原文内容："
+cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
 echo "========================="
-sed -i "/<a class=\"luci-link\"/d; /<a href=\"https:\/\/github.com\/jerrykuku\/luci-theme-argon\"/d; s|<%= ver.distversion %>|OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build @R$build_date|" package/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
+sed -i "/<a class=\"luci-link\"/d; /<a href=\"https:\/\/github.com\/jerrykuku\/luci-theme-argon\"/d; s|<%= ver.distversion %>|OpenWrt-ImmortalWrt-X64-全功能版 by GXNAS build @R$build_date|" feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
 echo "增加编译时间后package/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm的内容："
-cat package/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
+cat feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
 echo "========================="
 
 # 修改欢迎banner
