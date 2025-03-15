@@ -39,8 +39,8 @@ git clone -b main --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.
 git clone -b main --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki.git
 #istore
 #git clone -b main --depth 1 https://github.com/linkease/istore.git
-#GXNAS-Packages
-git clone -b main --depth 1 https://github.com/tudaole/OpenWrt-ImmortalWrt-Packages.git
+#Packages
+git clone -b main --depth 1 https://github.com/217heidai/OpenWrt-Packages.git
 
 popd
 
