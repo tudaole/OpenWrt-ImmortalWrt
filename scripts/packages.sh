@@ -40,7 +40,7 @@ git clone -b main --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki.git
 #istore
 #git clone -b main --depth 1 https://github.com/linkease/istore.git
 #GXNAS-Packages
-git clone -b main --depth 1 https://github.com/gxnas/OpenWrt_Build_x64_Packages.git
+git clone -b main --depth 1 https://github.com/tudaole/OpenWrt-ImmortalWrt-Packages.git
 
 popd
 
