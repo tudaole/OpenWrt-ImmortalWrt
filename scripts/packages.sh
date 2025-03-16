@@ -41,7 +41,7 @@ git clone -b main --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki.git
 #git clone -b main --depth 1 https://github.com/linkease/istore.git
 #Packages
 #git clone -b main --depth 1 https://github.com/kiddin9/kwrt-packages.git
-git clone -b main --depth 1 https://github.com/kenzok8/small-package.git
+git clone -b main --depth 1 https://github.com/gxnas/OpenWrt_Build_x64_Packages.git
 
 popd
 
