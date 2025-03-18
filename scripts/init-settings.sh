@@ -43,9 +43,18 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/*/Make
 # 最大连接数修改为65535
 sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
 
+# 将构建日期添加到概览页面
+echo "修改前的package/base-files/files/usr/lib/os-release内容为："
+cat package/base-files/files/usr/lib/os-release
+echo "========================="
+sed -i 's/%D %V/%D %V | Build by GXNAS |/g' package/base-files/files/usr/lib/os-release
+echo "修改后的package/base-files/files/usr/lib/os-release内容为："
+cat package/base-files/files/usr/lib/os-release
+echo "========================="
+
 # 显示增加编译时间
-sed -i "s/DISTRIB_REVISION='R[0-9]\+\.[0-9]\+\.[0-9]\+'/DISTRIB_REVISION='@R$build_date'/g" package/emortal/default-settings/files/99-default-settings
-sed -i 's/ImmortalWrt /OpenWrt_2410_X64_全功能版 by GXNAS build/g' package/emortal/default-settings/files/99-default-settings
+#sed -i "s/DISTRIB_REVISION='R[0-9]\+\.[0-9]\+\.[0-9]\+'/DISTRIB_REVISION='@R$build_date'/g" package/emortal/default-settings/files/99-default-settings
+#sed -i 's/ImmortalWrt /OpenWrt_2410_X64_全功能版 by GXNAS build/g' package/emortal/default-settings/files/99-default-settings
 
 # 修改右下角脚本版本信息
 sed -i 's/<a class=\"luci-link\" href=\"https:\/\/github.com\/openwrt\/luci\" target=\"_blank\">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)<\/a>/OpenWrt_2410_X64_全功能版 by GXNAS build @R'"$build_date"'/' feeds/luci/themes/luci-theme-argon/luasrc/view/themes/argon/footer.htm
