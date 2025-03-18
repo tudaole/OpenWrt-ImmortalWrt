@@ -161,7 +161,7 @@ jobs:
 
     - name: Telegram notification upload success
       if: steps.tag.outputs.status == 'success' && env.TELEGRAM_WORK_PUSH == 'true'
-      uses: appleboy/telegram-action@master
+      uses: appleboy/telegram-action@v0.4.0
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
