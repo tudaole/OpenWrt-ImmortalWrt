@@ -177,7 +177,7 @@ jobs:
                     - 🚀 内核版本: ${{ env.KERNEL }}\n
                     - 🌐 默认地址：192.168.1.11\n
                     - 🧊 更新时间：${{env.release}}",
-                  "url": "https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/${{ env.FILE_NAME }}"
+                  "url": "https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/openwrt-24.10"
                 }
               ]
             }
