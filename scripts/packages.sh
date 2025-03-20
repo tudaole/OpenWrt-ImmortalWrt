@@ -43,6 +43,9 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages.git package/pwp
 mkdir package/small
 pushd package/small
 
+#UnblockNeteaseMusic
+git clone -b js --depth 1 git clone https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
+
 #Packages
 git clone -b main --depth 1 https://github.com/tudaole/OpenWrt-ImmortalWrt-Packages.git
 
