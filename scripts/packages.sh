@@ -48,6 +48,7 @@ git clone -b js --depth 1 git clone https://github.com/UnblockNeteaseMusic/luci-
 
 #Packages
 git clone -b main --depth 1 https://github.com/tudaole/OpenWrt-ImmortalWrt-Packages.git
+merge_package openwrt-24.10 https://github.com/immortalwrt/luci package/custom
 
 # 报错修复
 rm -rf feeds/kenzok8/v2ray-plugin
@@ -55,7 +56,7 @@ rm -rf feeds/kenzok8/open-app-filter
 rm -rf feeds/packages/utils/v2dat
 rm -rf feeds/packages/adguardhome
 rm -rf feeds/luci/applications/luci-app-turboacc
-merge_package master https://github.com/xiangfeidexiaohuo/extra-ipk package/custom luci-app-adguardhome patch/luci-app-turboacc patch/wall-luci/lua-maxminddb patch/wall-luci/luci-app-vssr
+merge_package master https://github.com/xiangfeidexiaohuo/extra-ipk package/custom applications/luci-app-alist applications/luci-app-arpbind applications/luci-app-dae applications/luci-app-daed applications/luci-app-filebrowser applications/luci-app-filemanager applications/luci-app-firewall applications/luci-app-frpc applications/luci-app-frps applications/luci-app-mwan3 applications/luci-app-netdata applications/luci-app-socat applications/luci-app-syncdial applications/luci-app-transmission applications/luci-app-ttyd applications/luci-app-udpxy applications/luci-app-uhttpd applications/luci-app-unblockneteasemusic applications/luci-app-upnp applications/luci-app-usb-printer 
 
 popd
 
