@@ -29,34 +29,12 @@ merge_package() {
 	cd "$rootdir"
 }
 
-#删除feeds中的插件
-# rm -rf ./feeds/packages/net/mosdns
-# rm -rf ./feeds/packages/net/v2ray-geodata
-rm -rf ./feeds/packages/net/geoview
-rm -rf ./feeds/packages/net/shadowsocks-libev
-rm -rf ./feeds/packages/net/chinadns-ng
-
-#克隆依赖插件
-git clone https://github.com/xiaorouji/openwrt-passwall-packages.git package/pwpage
-
 #克隆的源码放在small文件夹
 mkdir package/small
 pushd package/small
 
-#UnblockNeteaseMusic
-git clone -b js --depth 1 git clone https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
-
 #Packages
-git clone -b main --depth 1 https://github.com/tudaole/OpenWrt-ImmortalWrt-Packages.git
-merge_package openwrt-24.10 https://github.com/immortalwrt/luci package/custom
-
-# 报错修复
-rm -rf feeds/kenzok8/v2ray-plugin
-rm -rf feeds/kenzok8/open-app-filter
-rm -rf feeds/packages/utils/v2dat
-rm -rf feeds/packages/adguardhome
-rm -rf feeds/luci/applications/luci-app-turboacc
-merge_package master https://github.com/xiangfeidexiaohuo/extra-ipk package/custom applications/luci-app-alist applications/luci-app-arpbind applications/luci-app-dae applications/luci-app-daed applications/luci-app-filebrowser applications/luci-app-filemanager applications/luci-app-firewall applications/luci-app-frpc applications/luci-app-frps applications/luci-app-mwan3 applications/luci-app-netdata applications/luci-app-socat applications/luci-app-syncdial applications/luci-app-transmission applications/luci-app-ttyd applications/luci-app-udpxy applications/luci-app-uhttpd applications/luci-app-unblockneteasemusic applications/luci-app-upnp applications/luci-app-usb-printer 
+git clone -b main --depth 1 https://github.com/gxnas/ImmortalWrt-2410-Packages.git
 
 popd
 
