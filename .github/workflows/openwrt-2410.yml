@@ -1,0 +1,195 @@
+#
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+#
+
+name: openwrt-24.10
+
+permissions: write-all
+#开启写权限，防止无法上传到release
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+  #schedule:
+   #- cron: 0 20 * * 4
+   #   分,时,日,月,星期。每周五 20时执行一次 (UTC时间)
+  
+env:
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_BRANCH: openwrt-24.10
+  CONFIG_FILE: configs/openwrt-2410.txt
+  FREE_DISK_SH: scripts/free_disk_space.sh
+  ENV_SH: scripts/environment.sh
+  SETTINGS_SH: scripts/init-settings.sh
+  PACKAGES_SH: scripts/packages.sh
+  CLASH_CORE_SH: scripts/preset-clash-core-amd64.sh
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: false
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+  FILE_NAME: openwrt-2410
+  WECHAT_WORK_PUSH: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: 检查
+      uses: actions/checkout@main
+
+    - name: 初始化环境
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        chmod +x $FREE_DISK_SH && $FREE_DISK_SH
+        sudo -E apt-get -qq update -y
+        sudo -E apt-get -qq full-upgrade -y
+        chmod +x $ENV_SH && $ENV_SH
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo timedatectl set-timezone "$TZ"
+        docker image prune -a -f
+        docker container prune -f
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+
+    - name: 检查空间使用情况1
+      if: (!cancelled())
+      run: df -hT
+
+    - name: 克隆源码
+      working-directory: /workdir
+      run: |
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+    - name: 开启缓存
+      uses: klever1988/cachewrtbuild@main
+      with:
+        ccache: 'true'
+        mixkey: 'openwrt-2410'
+        prefix: ${{ github.workspace }}/openwrt
+
+    - name: 更新 & 安装 feeds & 执行脚本
+      run: |
+        cd openwrt
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+        chmod +x $GITHUB_WORKSPACE/$SETTINGS_SH && $GITHUB_WORKSPACE/$SETTINGS_SH
+        chmod +x $GITHUB_WORKSPACE/$PACKAGES_SH && $GITHUB_WORKSPACE/$PACKAGES_SH
+        chmod +x $GITHUB_WORKSPACE/$CLASH_CORE_SH && $GITHUB_WORKSPACE/$CLASH_CORE_SH
+
+    - name: 导入补丁和配置 & 下载文件
+      run: |
+        [ -d files ] && mv files openwrt/files || echo "files not found"
+        [ -f $CONFIG_FILE ] && cat $CONFIG_FILE >> openwrt/.config
+        cd openwrt
+        make defconfig
+        make download -j8 V=10
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: 编译固件中
+      id: compile
+      run: |
+        cd openwrt
+        make defconfig
+        echo -e "$(($(nproc)+1)) thread compile"
+        make -j$(($(nproc)+1)) || make -j$(nproc) || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: 空间使用情况2
+      if: (!cancelled())
+      run: df -hT
+
+    - name: 上传 bin 目录
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: openwrt/bin
+
+    - name: 整理文件
+      id: organize
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        cd openwrt/bin/targets/*/*
+        rm -rf *.bin
+        rm -rf *.buildinfo 
+        rm -rf *.json 
+        rm -rf *.manifest 
+        rm -rf *rootfs*
+        rm -rf sha256sums
+        rm -rf packages
+        mv immortalwrt-x86-64-generic-squashfs-combined-efi.img.gz ${{ env.FILE_NAME }}-$(TZ=Asia/Shanghai date "+%Y%m%d")-uefi.img.gz
+        mv immortalwrt-x86-64-generic-squashfs-combined.img.gz ${{ env.FILE_NAME }}-$(TZ=Asia/Shanghai date "+%Y%m%d")-bios.img.gz
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: 上传固件目录
+      uses: actions/upload-artifact@main
+      if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
+      with:
+        name: ${{ env.FILE_NAME }}-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}
+
+    - name: 生成发布标签
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
+      run: |
+        echo -e "✅ openwrt-2410\n" >> release.txt
+        #echo "release_tag=$(date +"%Y.%m.%d-24.10_X86-64")" >> $GITHUB_OUTPUT
+        echo "release_tag=openwrt-2410" >> $GITHUB_OUTPUT
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: 收集固件信息
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        # 获取固件大小
+        FIRMWARE_SIZE=$(du -sh ${{ env.FIRMWARE }}/${{ env.FILE_NAME }}-$(TZ=Asia/Shanghai date "+%Y%m%d")-uefi.img.gz | awk '{print $1}')
+        echo "FIRMWARE_SIZE=$FIRMWARE_SIZE" >> $GITHUB_ENV
+
+        # 获取内核版本
+        KERNEL_VERSION=$(grep "CONFIG_KERNEL_VERSION=" openwrt/.config | cut -d '=' -f 2 | tr -d '"')
+        echo "KERNEL_VERSION=$KERNEL_VERSION" >> $GITHUB_ENV
+
+    - name: 上传固件到发布
+      uses: softprops/action-gh-release@v2.0.4
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        tag_name: openwrt-24.10
+        body_path: release.txt
+        files: ${{ env.FIRMWARE }}/*
+
+    - name: Enterprise WeChat notification upload success
+      if: steps.tag.outputs.status == 'success' && env.WECHAT_WORK_PUSH == 'true'
+      run: |
+        curl -X POST "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${{ secrets.WEBHOOK_SEND_KEY }}" \
+        -H "Content-Type: application/json" \
+        -d '{
+            "msgtype": "news",
+            "news": {
+              "articles": [
+                {
+                  "title": "♨️ 【${{ env.FILE_NAME }}】项目编译完成 ♨️",
+                  "description": "- ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}\n
+                    - 🔴 固件大小：$FIRMWARE_SIZE\n
+                    - 💻 平台架构: ${{ env.PRODUCT_NAME }}\n
+                    - ⚽ 固件源码: ${{ env.REPO_URL }}\n
+                    - 💝 源码分支: ${{ env.REPO_BRANCH }}\n
+                    - 🚀 内核版本: $KERNEL_VERSION\n
+                    - 🌐 默认地址：192.168.1.11\n
+                    - 🧊 更新时间：$(TZ=Asia/Shanghai date "+%Y-%m-%d %H:%M:%S")",
+                  "url": "https://github.com/tudaole/OpenWrt-ImmortalWrt/releases/tag/openwrt-24.10"
+                }
+              ]
+            }
+          }'
